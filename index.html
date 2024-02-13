@@ -1,11 +1,213 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Save Session</title>
-</head>
-<body>
-    
-</body>
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      html {
+        font-size: 62.5%;
+      }
+      body {
+        height: 100vh;
+        width: 100%;
+        background: linear-gradient(
+          207deg,
+          rgba(2, 0, 36, 1) 0%,
+          rgba(9, 9, 121, 1) 41%,
+          rgba(0, 212, 255, 1) 100%
+        );
+        display: flex;
+        justify-content: center;
+        align-items: center;
+      }
+
+      .form {
+        width: 35rem;
+        height: 40rem;
+        border: 2px solid rgba(255, 255, 255, .2);
+        background: rgba(255, 255, 255, .1);
+        backdrop-filter: blur(5rem);
+        position: relative;
+        border-radius: 1rem;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+      }
+
+      h2 {
+        font-size: 3rem;
+        color: white;
+        text-align: center;
+      }
+
+      .input-box {
+        position: relative;
+        width: 25rem;
+        margin: 1.5rem 0;
+        border-bottom: .2rem solid white;
+      }
+
+      .input-box label {
+        position: absolute;
+        top: 50%;
+        left: 5px;
+        transform: translateY(-50%);
+        font-size: 1.8rem;
+        color: white;
+        transition: .5s;
+        background: none;
+        pointer-events: none;
+      }
+
+      .input-box input {
+        font-size: 2rem;
+        width: 100%;
+        height: 5rem;
+        background: transparent;
+        border: none;
+        outline: none;
+        color: white;
+      }
+
+      form {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        flex-direction: column;
+      }
+
+      .btn, .logout {
+        margin-top: 3rem;
+        border-radius: 1rem;
+        border: 2px solid rgba(255, 255, 255, .5);
+        cursor: pointer;
+        background: transparent;
+        font-size: 2.5rem;
+        color: white;
+        padding: .8rem 5rem;
+        transition: all .3s;
+
+        &:hover {
+            transform: scale(1.1);
+            background: rgba(255, 255, 255, .2);
+            backdrop-filter: blur(6rem);
+        }
+
+      }
+
+      .hide{
+        display: none !important;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="form" id="form">
+        <form action="">
+            <h2>Login</h2>
+            <div class="input-box">
+                <input type="email" id="email">
+                <label class="mail" for="email">Email</label>
+            </div>
+            <div class="input-box">
+                <input type="password" id="password">
+                <label class="pass" for="password">Password</label>
+            </div>
+            <input class="btn" type="button" value="Login">
+        </form>
+    </div>
+
+    <div class="success hide">
+        <h2>You Have Logged in Successfully</h2>
+        <button class="logout">Logout</button>
+    </div>
+
+    <script>
+        let focusMail = document.querySelector(".mail");
+        let focusPass = document.querySelector(".pass");
+        let email = document.querySelector("#email");
+        let password = document.querySelector("#password");
+        let btn = document.querySelector(".btn");
+
+        email.addEventListener("input", ()=> {
+            if(!email.value){
+                focusMail.style.top = "50%";
+            }
+            else {
+                focusMail.style.top = "-5px";
+            }
+        })
+        password.addEventListener("input", ()=> {
+            if(!password.value){
+                focusPass.style.top = "50%";
+            }
+            else {
+                focusPass.style.top = "-5px";
+            }
+        })
+
+        btn.addEventListener("click", ()=> {
+            if(!email.value || !password.value){
+                alert("Please Enter Details");
+            }
+            else {
+                if(email.value === "mymail@gmail.com" && password.value === "test@123"){
+                    let userData = {
+                        "userMail" : email.value,
+                        "userPass" : password.value
+                    };
+
+                    let jsonData = JSON.stringify(userData);
+
+                    localStorage.setItem("testUser", jsonData);
+
+                    document.querySelector(".form").classList.add("hide");
+                    document.querySelector(".success").classList.remove("hide");
+
+                    email.value = password.value = "";
+                    focusMail.style.top = "50%";
+                    focusPass.style.top = "50%";
+                }
+                else{
+                    alert("Please Enter Correct Email or Password");
+                }
+            }
+        })
+
+        window.onload = function () {
+            if(checkLogin()){
+                document.querySelector(".form").classList.add("hide");
+                document.querySelector(".success").classList.remove("hide");
+            }
+        }
+
+        function checkLogin () {
+            try {
+                let storeData = localStorage.getItem("testUser");
+                let parseData = JSON.parse(storeData);
+                if(parseData.userMail === "mymail@gmail.com" && parseData.userPass === "test@123"){
+                return true;
+            }
+            } catch (error) {
+                console.log(error);
+            }
+        }
+
+        let logout = document.querySelector(".logout");
+
+        logout.addEventListener("click", ()=> {
+            let storeData = localStorage.removeItem("testUser");
+            document.querySelector(".form").classList.remove("hide");
+            document.querySelector(".success").classList.add("hide");
+        })
+
+
+    </script>
+  </body>
 </html>
